@@ -22,6 +22,14 @@ const App = () => {
     setTask("");
   };
 
+  // Supprimer une tâche
+  const deleteTodo = (id) => {
+    axios
+      .delete(`http://localhost:5000/api/todos/${id}`)
+      .then(() => setTodos(todos.filter((todo) => todo.id !== id)))
+      .catch((error) => console.error(error));
+  };
+
   return (
     <div className="App">
       <h1>Todo List</h1>
@@ -33,7 +41,10 @@ const App = () => {
       <button onClick={addTodo}>Ajouter</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.task} </li>
+          <li key={todo.id}>
+            {todo.task}{" "}
+            <button onClick={() => deleteTodo(todo.id)}>Supprimer</button>{" "}
+          </li>
         ))}
       </ul>
     </div>
