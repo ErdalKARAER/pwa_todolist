@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import "./index.css";
-import * as serviceWorker from "./serviceWorker"; // Ajoutez cette ligne
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration"; // Assurez-vous que le chemin est correct
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -12,4 +13,7 @@ root.render(
 );
 
 // Enregistrez le service worker
-serviceWorker.register();
+serviceWorkerRegistration.register();
+
+// Mesurer la performance de l'application
+reportWebVitals();
