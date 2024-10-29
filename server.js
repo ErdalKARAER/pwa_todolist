@@ -18,6 +18,18 @@ app.delete("/api/todos/:id", (req, res) => {
   todos = todos.filter((todo) => todo.id !== parseInt(req.params.id));
   res.status(204).end();
 });
+app.put("/api/todos/:id", (req, res) => {
+  const { id } = req.params;
+  const { task } = req.body;
+  const todoIndex = todos.findIndex((todo) => todo.id === parseInt(id));
+
+  if (todoIndex !== -1) {
+    todos[todoIndex].task = task;
+    res.json(todos[todoIndex]);
+  } else {
+    res.status(404).json({ error: "Todo not found" });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () =>

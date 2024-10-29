@@ -4,6 +4,8 @@ import axios from "axios";
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
+  const [editingId, setEditingId] = useState(null); // Id de la tâche en cours d'édition
+  const [editingTask, setEditingTask] = useState(""); // Contenu de la tâche en cours d'édition
 
   // Récupérer les tâches
   useEffect(() => {
@@ -27,6 +29,28 @@ const App = () => {
     axios
       .delete(`http://localhost:5000/api/todos/${id}`)
       .then(() => setTodos(todos.filter((todo) => todo.id !== id)))
+      .catch((error) => console.error(error));
+  };
+
+  // Mettre une tâche en mode édition
+  const startEditing = (id, currentTask) => {
+    setEditingId(id);
+    setEditingTask(currentTask);
+  };
+
+  // Enregistrer les modifications de la tâche
+  const updateTodo = () => {
+    axios
+      .put(`http://localhost:5000/api/todos/${editingId}`, {
+        task: editingTask,
+      })
+      .then((response) => {
+        setTodos(
+          todos.map((todo) => (todo.id === editingId ? response.data : todo))
+        );
+        setEditingId(null); // Arrête le mode d'édition
+        setEditingTask("");
+      })
       .catch((error) => console.error(error));
   };
 
@@ -56,13 +80,47 @@ const App = () => {
               key={todo.id}
               className="flex justify-between items-center bg-gray-50 border border-gray-200 p-3 rounded-lg shadow-sm"
             >
-              <span className="text-gray-800">{todo.task}</span>
-              <button
-                onClick={() => deleteTodo(todo.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
-              >
-                Supprimer
-              </button>
+              {editingId === todo.id ? (
+                // Mode édition
+                <div className="flex-1 flex space-x-2">
+                  <input
+                    value={editingTask}
+                    onChange={(e) => setEditingTask(e.target.value)}
+                    className="flex-1 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                  <button
+                    onClick={updateTodo}
+                    className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  >
+                    Enregistrer
+                  </button>
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  >
+                    Annuler
+                  </button>
+                </div>
+              ) : (
+                // Affichage normal
+                <>
+                  <span className="text-gray-800">{todo.task}</span>
+                  <div className="space-x-2">
+                    <button
+                      onClick={() => startEditing(todo.id, todo.task)}
+                      className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      onClick={() => deleteTodo(todo.id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </>
+              )}
             </li>
           ))}
         </ul>
