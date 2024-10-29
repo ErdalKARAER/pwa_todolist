@@ -31,4 +31,4 @@ app.put("/api/todos/:id/completed", (req, res) => {
 });
 
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Serveur backend http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Serv backend http://localhost:${PORT}`));
