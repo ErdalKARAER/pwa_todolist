@@ -5,6 +5,14 @@ const App = () => {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState("");
 
+  // Récupérer les tâches
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/todos")
+      .then((response) => setTodos(response.data))
+      .catch((error) => console.error(error));
+  }, []);
+
   // Ajouter une tâche
   const addTodo = () => {
     axios
